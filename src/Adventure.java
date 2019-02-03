@@ -2,11 +2,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Arrays;
 
 public class Adventure {
 
@@ -60,9 +62,10 @@ public class Adventure {
     }
 
     class Layout {
-        String startingRoom;
-        String endingRoom;
-        Room[] allRooms;
+
+        private String startingRoom;
+        private String endingRoom;
+        private Room[] allRooms;
 
         public String getStartingRoom() {
             return startingRoom;
@@ -92,10 +95,25 @@ public class Adventure {
             return new Room();
         }
 
+        @Override
+        public boolean equals(Object other) {
+
+            if (!(other instanceof Layout)) {
+                return false;
+            }
+
+            Layout otherLayout = (Layout) other;
+            return otherLayout.getStartingRoom().equals(this.startingRoom)
+                    && otherLayout.getEndingRoom().equals(this.endingRoom)
+                    && Arrays.deepEquals(otherLayout.getAllRooms(), this.allRooms);
+
+        }
+
         class Room {
-            String name;
-            String description;
-            Direction[] possibleDirections;
+
+            private String name;
+            private String description;
+            private Direction[] possibleDirections;
 
             public String getName() {
                 return name;
@@ -125,12 +143,27 @@ public class Adventure {
                 return new Direction();
             }
 
+            @Override
+            public boolean equals(Object other) {
+
+                if (!(other instanceof Room)) {
+                    return false;
+                }
+
+                Room otherRoom = (Room) other;
+                return otherRoom.getName().equals(this.name)
+                        && otherRoom.getDescription().equals(this.description)
+                        && Arrays.deepEquals(otherRoom.getPossibleDirections(), this.possibleDirections);
+
+            }
+
             class Direction {
+
                 //Must be north, south, east, or west
-                String directionName;
+                private String directionName;
 
                 //The room in the direction you are facing
-                String room;
+                private String room;
 
                 public String getDirectionName() {
                     return directionName;
@@ -147,6 +180,21 @@ public class Adventure {
                 public void setRoom(String room) {
                     this.room = room;
                 }
+
+                @Override
+                public boolean equals(Object other) {
+
+                    if (!(other instanceof Direction)) {
+                        return false;
+                    }
+
+                    Direction otherDirection = (Direction) other;
+
+                    return otherDirection.getDirectionName().equals(this.directionName)
+                            && otherDirection.getRoom().equals(this.room);
+
+                }
+
             }
 
         }
