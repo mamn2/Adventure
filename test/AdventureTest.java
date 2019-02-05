@@ -1,11 +1,12 @@
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.io.IOException;
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-public class AdventureGameTest {
+public class AdventureTest {
 
     private static Adventure siebelAdventureGame;
 
@@ -18,7 +19,22 @@ public class AdventureGameTest {
     }
 
     @Test
-    public void falseURLTest() throws AssertionError {
+    public void nonURLTest() throws AssertionError {
+
+        boolean exceptionThrown = false;
+
+        try {
+            new Adventure(new URL("not_a_url"));
+        } catch (IOException e) {
+            exceptionThrown = true;
+        }
+
+        assertTrue(exceptionThrown);
+
+    }
+
+    @Test
+    public void invalidURLTest() throws AssertionError {
 
         boolean exceptionThrown = false;
 
@@ -33,19 +49,21 @@ public class AdventureGameTest {
     }
 
     @Test
-    public void getStartingRoomTest() throws AssertionError {
+    public void invalidJSONTest() throws AssertionError {
 
-        assertEquals("MatthewsStreet", siebelAdventureGame.getGameLayout().getStartingRoom());
+        boolean nullPtrExceptionThrown = false;
+
+        try {
+            new Adventure(new URL("http://api.tvmaze.com/singlesearch/shows?q=mr-robot&embed=episodes"));
+        } catch (NullPointerException e) {
+            nullPtrExceptionThrown = true;
+        } catch (IOException e) {
+            //if this exception is thrown, the null pointer exception was not thrown and the assertion is false
+        }
+
+        assertTrue(nullPtrExceptionThrown);
 
     }
-
-    @Test
-    public void getEndingRoomTest() throws AssertionError {
-
-        assertEquals("Siebel1314", siebelAdventureGame.getGameLayout().getEndingRoom());
-
-    }
-
 
     @Test
     public void testInvalidDirectionInput() throws AssertionError {

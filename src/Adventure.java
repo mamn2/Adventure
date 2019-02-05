@@ -6,8 +6,10 @@ import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
 import java.net.URL;
 import java.net.URLConnection;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -41,28 +43,36 @@ public class Adventure {
 
         JsonArray rooms = jsonData.get("rooms").getAsJsonArray();
         Layout.Room[] roomsArray = new Layout.Room[rooms.size()];
+
         //Goes through all the rooms in the JSON and converts them into an array of type Room.
         for (int i = 0; i < roomsArray.length; i++) {
-            //takes all fields from JSON and uses them to initialize fields in room class.
+
+            //takes all fields from JSON and uses them to initialize fields in Room class.
             roomsArray[i] = new Gson().fromJson(rooms.get(i), Layout.Room.class);
 
+            //Stores all directions for room in a JsonArray.
             JsonArray directions = rooms.get(i).getAsJsonObject().get("directions").getAsJsonArray();
             Layout.Room.Direction[] directionsInRoom = new Layout.Room.Direction[directions.size()];
+
             //Goes through all the directions in each room and converts them into an array.
             for (int j = 0; j < directionsInRoom.length; j++) {
                 //takes all fields from JSON and uses to initialize fields in Direction class.
                 directionsInRoom[j] = new Gson().fromJson(directions.get(j), Layout.Room.Direction.class);
-                directionsInRoom[j].nextRoomName = directions.get(j).getAsJsonObject().get("room").getAsString();
+                directionsInRoom[j].roomAheadName = directions.get(j).getAsJsonObject().get("room").getAsString();
             }
             roomsArray[i].setPossibleDirections(directionsInRoom);
+
         }
+
+        //sets all fields of the Layout class in the gameLayout instance
         gameLayout.setAllRooms(roomsArray);
-        gameLayout.setStartingRoom(roomsArray[0]);
+        gameLayout.setStartingRoom(gameLayout.getRoomByName(jsonData.get("startingRoom").getAsString()));
         gameLayout.setEndingRoom(gameLayout.getRoomByName(jsonData.get("endingRoom").getAsString()));
 
+        //Sets all rooms that a direction points to
         for (Layout.Room room: gameLayout.getAllRooms()) {
             for (Layout.Room.Direction direction : room.getPossibleDirections()) {
-                direction.setNextRoom(gameLayout.getRoomByName(direction.nextRoomName));
+                direction.setRoomAhead(gameLayout.getRoomByName(direction.roomAheadName));
             }
         }
 
@@ -76,55 +86,52 @@ public class Adventure {
         return gameLayout;
     }
 
-    private String findDirections(Layout.Room room) {
-
-        StringBuilder roomList = new StringBuilder();
-        Layout.Room.Direction[] allDirections = room.getPossibleDirections();
-
-        for (Layout.Room.Direction direction : allDirections) {
-            roomList.append(direction.getDirectionName());
-            roomList.append(", ");
-        }
-
-        String directionsList = roomList.toString();
-        return (directionsList.substring(0, roomList.length() - 2)).toLowerCase();
-
-    }
-
+    /**
+     * Initializes game, takes user inputs, and logs the results to the console.
+     */
     private void playGame() {
 
+        //Initializes game
         Layout.Room currentRoom = gameLayout.getStartingRoom();
         System.out.println(currentRoom.getDescription());
         System.out.println("Your journey begins here");
 
+        //Scanner is used for recording user input
         Scanner scanner = new Scanner(System.in);
 
         while (currentRoom != gameLayout.getEndingRoom()) {
 
-            System.out.println("From here you can go " + findDirections(currentRoom));
+            //Lists the directions a user can travel
+            System.out.println(currentRoom.printAllDirections());
 
+            //Records user input
             String input = scanner.nextLine();
 
+            //Tests for base case exit or quit, case insensitive
             if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
                 break;
             }
 
-            Layout.Room tempCurrentRoom = gameLayout.searchRoomsByDirection(currentRoom, input);
+            //Looks for rooms through the user input
+            Layout.Room tempCurrentRoom = currentRoom.findRoomsInDirection(input);
+
+            //Ensures the direction is viable by re-prompting user if it isn't
             while (tempCurrentRoom == null) {
                 System.out.println("You can't go there, try again");
-                tempCurrentRoom = gameLayout.searchRoomsByDirection(currentRoom, scanner.nextLine());
+                tempCurrentRoom = currentRoom.findRoomsInDirection(scanner.nextLine());
             }
+
+            //Since the travel direction is possible, we move the user to a new room
             currentRoom = tempCurrentRoom;
             System.out.println(currentRoom.getDescription());
 
+            //Game will end if this is the last room, otherwise it continues.
             if (currentRoom.equals(gameLayout.getEndingRoom())) {
                 System.out.println("You have reached your final destination.");
                 break;
             }
 
         }
-
-
 
     }
 
@@ -190,6 +197,12 @@ public class Adventure {
             this.allRooms = allRooms;
         }
 
+        /**
+         * Searches if any of the rooms has the name passed in.
+         * If it does, it returns that room.
+         * @param name name of the room being searched, case sensitive.
+         * @return room that was found, if none was found it returns null
+         */
         public Room getRoomByName(String name) {
 
             if (name == null || allRooms == null) {
@@ -199,19 +212,6 @@ public class Adventure {
             for (Room room : allRooms) {
                 if (room.getName().equals(name)) {
                     return room;
-                }
-            }
-
-            return null;
-        }
-
-        public Room searchRoomsByDirection(Room currentRoom, String nextDirection) {
-
-            if (currentRoom != null && nextDirection != null) {
-                for (Room.Direction direction : currentRoom.getPossibleDirections()) {
-                    if (direction.getDirectionName().toUpperCase().equals(nextDirection.toUpperCase())) {
-                        return direction.getNextRoom();
-                    }
                 }
             }
 
@@ -241,6 +241,8 @@ public class Adventure {
             }
 
             Layout otherLayout = (Layout) other;
+
+            //Ensures that all instance variables are the same
             return otherLayout.getStartingRoom().equals(this.startingRoom)
                     && otherLayout.getEndingRoom().equals(this.endingRoom)
                     && Arrays.deepEquals(otherLayout.getAllRooms(), this.allRooms);
@@ -310,6 +312,57 @@ public class Adventure {
             }
 
             /**
+             * Finds a room that is in the direction inputted.
+             * @param travelDirection the direction the user wants to travel.
+             * @return a room that is in the travelling direction, if there is none it returns null.
+             */
+            public Room findRoomsInDirection(String travelDirection) {
+
+                //ensures neither the current room or travelDirection are null
+                if (travelDirection != null) {
+                    //iterates through the possible directions you can travel to from current room
+                    for (Room.Direction direction : possibleDirections) {
+                        //finds a room that it is in that direction
+                        if (direction.getDirectionName().toUpperCase().equals(travelDirection.toUpperCase())) {
+                            return direction.getRoomAhead();
+                        }
+                    }
+                }
+
+                return null;
+
+            }
+
+            /**
+             * Finds the potential directions that a player can move given their current location.
+             * @return a String of all the locations they can go to.
+             */
+            public String printAllDirections() {
+
+                StringBuilder roomList = new StringBuilder();
+                roomList.append("From here you can go ");
+
+                for (int i = 0; i < possibleDirections.length; i++) {
+
+                    if (i == 0) {
+                        roomList.append(possibleDirections[0].getDirectionName());
+                        if (possibleDirections.length > 1) {
+                            roomList.append(", ");
+                        }
+                    } else if (i != possibleDirections.length - 1) {
+                        roomList.append(possibleDirections[i].getDirectionName());
+                        roomList.append(", ");
+                    } else {
+                        roomList.append("or ");
+                        roomList.append(possibleDirections[i].getDirectionName());
+                    }
+                }
+
+                return roomList.toString();
+
+            }
+
+            /**
              * Creates a new direction of this instance of room.
              * Note: This does not add to the Direction array.
              * @return a new direction of this instance of Room.
@@ -346,10 +399,10 @@ public class Adventure {
                 private String directionName;
 
                 //The room in the direction you are facing
-                private Room nextRoom;
+                private Room roomAhead;
 
-                //Created for deserialization purposes, use "nextRoom"
-                private String nextRoomName;
+                //Created for deserialization purposes, use "roomAhead"
+                private String roomAheadName;
 
                 /**
                  * Gets the direction name (North, South, East, etc.)
@@ -371,16 +424,16 @@ public class Adventure {
                  * Getter for room in the direction from current point.
                  * @return room name that is in the direction from current point.
                  */
-                public Room getNextRoom() {
-                    return nextRoom;
+                public Room getRoomAhead() {
+                    return roomAhead;
                 }
 
                 /**
                  * Setter for room variable.
                  * @param room in the direction of the current location.
                  */
-                public void setNextRoom(Room room) {
-                    this.nextRoom = room;
+                public void setRoomAhead(Room room) {
+                    this.roomAhead = room;
                 }
 
                 /**
@@ -398,7 +451,7 @@ public class Adventure {
                     Direction otherDirection = (Direction) other;
 
                     return otherDirection.getDirectionName().equals(this.directionName)
-                            && otherDirection.getNextRoom().equals(this.nextRoom);
+                            && otherDirection.getRoomAhead().equals(this.roomAhead);
 
                 }
 
@@ -409,6 +462,9 @@ public class Adventure {
     }
 
 
+    /**
+     * Initializes a new Adventure game through user input.
+     */
     public static void main(String[] args) {
 
         System.out.println("Enter a URL containing information about the game, press space after writing URL: ");
@@ -433,6 +489,7 @@ public class Adventure {
         scanner = null;
 
         adventure.playGame();
+
     }
 
 }
