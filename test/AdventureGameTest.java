@@ -46,23 +46,6 @@ public class AdventureGameTest {
 
     }
 
-    @Test
-    public void getRoomEqualityTest() throws AssertionError {
-
-        Adventure.Layout.Room testRoom = siebelAdventureGame.getGameLayout().createNewRoom();
-
-        testRoom.setName("AcmOffice");
-        testRoom.setDescription("You are in the ACM office.  There are lots of friendly ACM people.");
-
-        Adventure.Layout.Room.Direction direction = testRoom.createNewDirection();
-        direction.setDirectionName("South");
-        direction.setRoom("SiebelEntry");
-        Adventure.Layout.Room.Direction[] directions = new Adventure.Layout.Room.Direction[] { direction };
-        testRoom.setPossibleDirections(directions);
-
-        assertEquals(testRoom, siebelAdventureGame.getGameLayout().getAllRooms()[2]);
-
-    }
 
     @Test
     public void testInvalidDirectionInput() throws AssertionError {
