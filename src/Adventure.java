@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Arrays;
+import java.util.Scanner;
 
 /**
  * This class represents the state and behavior of an Adventure game.
@@ -23,7 +24,7 @@ public class Adventure {
      * @param jsonURL a URL that links to a JSON file.
      * @throws IOException if the URL does not exist or does not link a JSON file.
      */
-    public Adventure(URL jsonURL) throws IOException {
+    public Adventure(URL jsonURL) throws IOException, NullPointerException {
 
         //Connecting to the URL
         URLConnection request = jsonURL.openConnection();
@@ -66,6 +67,27 @@ public class Adventure {
      */
     public Layout getGameLayout() {
         return gameLayout;
+    }
+
+    private String findDirections(Layout.Room room) {
+        StringBuilder roomList = new StringBuilder();
+        Layout.Room.Direction[] allDirections = room.getPossibleDirections();
+
+        for (Layout.Room.Direction direction : allDirections) {
+            roomList.append(direction.getDirectionName());
+            roomList.append(", ");
+        }
+
+        String directionsList = roomList.toString();
+        return directionsList.substring(0, roomList.length() - 2);
+    }
+
+    private void playGame() {
+        Layout.Room firstRoom = gameLayout.getRoomByName(gameLayout.getStartingRoom());
+        System.out.println(firstRoom.getDescription());
+        System.out.println("Your journey begins here");
+        System.out.println("From here, you can go: " + findDirections(firstRoom));
+
     }
 
     /**
@@ -128,6 +150,21 @@ public class Adventure {
          */
         public void setAllRooms(Room[] allRooms) {
             this.allRooms = allRooms;
+        }
+
+        public Room getRoomByName(String name) {
+
+            if (name == null || allRooms == null) {
+                return null;
+            }
+
+            for (Room room : allRooms) {
+                if (room.getName().equals(name)) {
+                    return room;
+                }
+            }
+
+            return null;
         }
 
         /**
@@ -317,5 +354,30 @@ public class Adventure {
     }
 
 
+    public static void main(String[] args) {
+
+        System.out.println("Enter a URL containing information about the game, press space after writing URL: ");
+        Scanner scanner = new Scanner(System.in);
+
+        Adventure adventure = null;
+
+        boolean validURL = false;
+
+        for (String url = scanner.nextLine(); !validURL; url = scanner.nextLine()) {
+            try {
+                URL urlInput = new URL(url);
+                adventure = new Adventure(urlInput);
+                validURL = true;
+                System.out.println("Press enter to start game");
+            } catch (IOException e) {
+                System.out.println("This is not a URL, try again");
+            } catch (Exception e) {
+                System.out.println("This URL is not an Adventure game, try again");
+            }
+        }
+        scanner = null;
+
+        adventure.playGame();
+    }
 
 }
