@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class RoomTest {
 
@@ -31,6 +32,31 @@ public class RoomTest {
         siebel1112Room.setPossibleDirections(directions);
 
         assertEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[4]);
+
+    }
+
+    @Test
+    public void roomNullInequalityTest() throws AssertionError {
+
+        assertNotEquals(null, siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
+
+    }
+
+    @Test
+    public void roomInequalityTest() throws AssertionError {
+
+        Adventure.Layout.Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
+
+        siebel1112Room.setName("Siebel1112");
+        siebel1112Room.setDescription("You are in Siebel 1112.  There is space for two code reviews in this room.");
+
+        Adventure.Layout.Room.Direction siebel1112directions = siebel1112Room.createNewDirection();
+        siebel1112directions.setDirectionName("West");
+        siebel1112directions.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
+        Adventure.Layout.Room.Direction[] directions = new Adventure.Layout.Room.Direction[] { siebel1112directions };
+        siebel1112Room.setPossibleDirections(directions);
+
+        assertNotEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[3]);
 
     }
 

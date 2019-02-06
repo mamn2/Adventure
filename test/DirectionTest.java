@@ -32,6 +32,14 @@ public class DirectionTest {
     }
 
     @Test
+    public void directionNullInequalityTest() throws AssertionError {
+
+        assertNotEquals(null,
+                siebelAdventureGame.getGameLayout().getStartingRoom().getPossibleDirections()[0]);
+
+    }
+
+    @Test
     public void directionInequalityTest() throws AssertionError {
 
         Adventure.Layout.Room.Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
