@@ -21,19 +21,26 @@ public class Adventure {
     //Layout of the games locations, directions, rooms, etc.
     private Layout gameLayout;
 
+    /**
+     * Initializes a new Adventure game to ensure a user cannot create an invalid instance of Adventure.
+     * @param url is a url containing a JSON of the Adventure structure.
+     * @return a new Adventure class, or null if it is invalid.
+     */
     public static Adventure initialize(String url) {
 
         try {
             URL urlInput = new URL(url);
+            Adventure adventure = new Adventure(urlInput);
             System.out.println("Press enter to start game");
-            return new Adventure(urlInput);
+            return adventure;
         } catch (IOException e) {
-            System.out.println("This is not a URL, try again");
+            System.out.println("This is not a JSON URL, try again");
         } catch (Exception e) {
             System.out.println("This URL is not an Adventure game, try again");
         }
 
         return null;
+
     }
 
     /**
@@ -491,6 +498,7 @@ public class Adventure {
 
         Adventure adventure = null;
 
+        //loops until user initializes adventure.
         while (adventure == null){
             adventure = initialize(scanner.nextLine());
         }
