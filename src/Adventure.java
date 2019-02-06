@@ -21,12 +21,27 @@ public class Adventure {
     //Layout of the games locations, directions, rooms, etc.
     private Layout gameLayout;
 
+    public static Adventure initialize(String url) {
+
+        try {
+            URL urlInput = new URL(url);
+            System.out.println("Press enter to start game");
+            return new Adventure(urlInput);
+        } catch (IOException e) {
+            System.out.println("This is not a URL, try again");
+        } catch (Exception e) {
+            System.out.println("This URL is not an Adventure game, try again");
+        }
+
+        return null;
+    }
+
     /**
-     * This class deserializes a JSON object from a URL to form an Adventure class.
+     * This constructor deserializes a JSON object from a URL to form an Adventure class.
      * @param jsonURL a URL that links to a JSON file.
      * @throws IOException if the URL does not exist or does not link a JSON file.
      */
-    public Adventure(URL jsonURL) throws IOException, NullPointerException {
+    private Adventure(URL jsonURL) throws IOException, NullPointerException {
 
         //Connecting to the URL
         URLConnection request = jsonURL.openConnection();
@@ -104,33 +119,58 @@ public class Adventure {
             //Lists the directions a user can travel
             System.out.println(currentRoom.printAllDirections());
 
-            //Records user input
-            String input = scanner.nextLine();
-
-            //Tests for base case exit or quit, case insensitive
-            if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
-                break;
-            }
-
-            //Looks for rooms through the user input
-            Layout.Room tempCurrentRoom = currentRoom.findRoomsInDirection(input);
-
-            //Ensures the direction is viable by re-prompting user if it isn't
+            Layout.Room tempCurrentRoom = null;
             while (tempCurrentRoom == null) {
-                System.out.println("You can't go there, try again");
-                tempCurrentRoom = currentRoom.findRoomsInDirection(scanner.nextLine());
+                tempCurrentRoom = userInputResponse(scanner.nextLine(), currentRoom);
             }
 
             //Since the travel direction is possible, we move the user to a new room
             currentRoom = tempCurrentRoom;
             System.out.println(currentRoom.getDescription());
 
-            //Game will end if this is the last room, otherwise it continues.
-            if (currentRoom.equals(gameLayout.getEndingRoom())) {
-                System.out.println("You have reached your final destination.");
-                break;
-            }
+        }
 
+    }
+
+    /**
+     * Determines what steps to take given the user input. Separated for testing purposes.
+     * @param input is the input the player made in the console
+     * @param currentRoom is the current room the user is in
+     * @return a room if there is one, null if the user entered the wrong input.
+     *         System exits if the user prompts it to exit.
+     */
+    public Layout.Room userInputResponse(String input, Layout.Room currentRoom) {
+
+        if (input == null || input.length() < 3) {
+            return null;
+        }
+
+        //Tests for base case exit or quit, case insensitive
+        if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
+            System.exit(1);
+            //Never executed, but needed by compiler
+            return null;
+        } else if (input.substring(0, 3).toUpperCase().equals("GO ")) {
+            //looks for rooms in direction specified by user
+            //if there is no room in said direction, return null
+            Layout.Room tempCurrentRoom = currentRoom.findRoomsInDirection(input.substring(3));
+            if (tempCurrentRoom == null) {
+                //Activates when their is no room in the inputted direction
+                System.out.println("I can't " + input);
+                return null;
+            } else if (tempCurrentRoom.equals(gameLayout.getEndingRoom())) {
+                //reaching the last room finishes the game
+                System.out.println(tempCurrentRoom.getDescription());
+                System.out.println("You have reached your final destination.");
+                System.exit(1);
+                //Never executed, but needed by compiler
+                return null;
+            } else {
+                return tempCurrentRoom;
+            }
+        } else {
+            System.out.println("I don't understand " + "'" + input + "'");
+            return null;
         }
 
     }
@@ -228,26 +268,6 @@ public class Adventure {
             return new Room();
         }
 
-        /**
-         * Equality checker for layouts.
-         * @param other is the other object it is being compared to.
-         * @return true if the objects are equal, false otherwise.
-         */
-        @Override
-        public boolean equals(Object other) {
-
-            if (!(other instanceof Layout)) {
-                return false;
-            }
-
-            Layout otherLayout = (Layout) other;
-
-            //Ensures that all instance variables are the same
-            return otherLayout.getStartingRoom().equals(this.startingRoom)
-                    && otherLayout.getEndingRoom().equals(this.endingRoom)
-                    && Arrays.deepEquals(otherLayout.getAllRooms(), this.allRooms);
-
-        }
 
         /**
          * This class represents the state and behavior of a Room in the Adventure game.
@@ -340,7 +360,7 @@ public class Adventure {
             public String printAllDirections() {
 
                 StringBuilder roomList = new StringBuilder();
-                roomList.append("From here you can go ");
+                roomList.append("From here you can go: ");
 
                 for (int i = 0; i < possibleDirections.length; i++) {
 
@@ -461,7 +481,6 @@ public class Adventure {
 
     }
 
-
     /**
      * Initializes a new Adventure game through user input.
      */
@@ -472,21 +491,9 @@ public class Adventure {
 
         Adventure adventure = null;
 
-        boolean validURL = false;
-
-        for (String url = scanner.nextLine(); !validURL; url = scanner.nextLine()) {
-            try {
-                URL urlInput = new URL(url);
-                adventure = new Adventure(urlInput);
-                validURL = true;
-                System.out.println("Press enter to start game");
-            } catch (IOException e) {
-                System.out.println("This is not a URL, try again");
-            } catch (Exception e) {
-                System.out.println("This URL is not an Adventure game, try again");
-            }
+        while (adventure == null){
+            adventure = initialize(scanner.nextLine());
         }
-        scanner = null;
 
         adventure.playGame();
 

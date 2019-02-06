@@ -2,7 +2,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 
@@ -13,8 +12,7 @@ public class RoomTest {
     @BeforeClass
     public static void setAdventureGame() throws IOException {
 
-        siebelAdventureGame = new Adventure(
-                new URL("https://courses.engr.illinois.edu/cs126/adventure/siebel.json"));
+        siebelAdventureGame = Adventure.initialize("https://courses.engr.illinois.edu/cs126/adventure/siebel.json");
 
     }
 
@@ -61,7 +59,7 @@ public class RoomTest {
         Adventure.Layout.Room siebelNorth = siebelAdventureGame
                     .getGameLayout().getRoomByName("SiebelNorthHallway");
 
-        assertEquals("From here you can go South, or NorthEast", siebelNorth.printAllDirections());
+        assertEquals("From here you can go: South, or NorthEast", siebelNorth.printAllDirections());
 
     }
 

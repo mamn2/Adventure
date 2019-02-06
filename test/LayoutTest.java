@@ -2,7 +2,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -15,8 +14,7 @@ public class LayoutTest {
     @BeforeClass
     public static void setAdventureGame() throws IOException {
 
-        siebelAdventureGame = new Adventure(
-                new URL("https://courses.engr.illinois.edu/cs126/adventure/siebel.json"));
+        siebelAdventureGame = Adventure.initialize("https://courses.engr.illinois.edu/cs126/adventure/siebel.json");
 
     }
 
