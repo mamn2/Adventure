@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class AdventureTest {
 
@@ -40,6 +41,15 @@ public class AdventureTest {
     public void invalidJSONTest() throws AssertionError {
 
         assertNull(Adventure.initialize("http://api.tvmaze.com/singlesearch/shows?q=mr-robot&embed=episodes"));
+
+    }
+
+    @Test
+    public void validJSONTest() throws AssertionError {
+
+        assertTrue(Adventure.initialize(
+                "https://courses.engr.illinois.edu/cs126/sp2019/adventure/student_submissions/CustomAdventureGame.json")
+                instanceof Adventure);
 
     }
 
