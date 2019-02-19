@@ -73,8 +73,8 @@ public class AdventureTest {
     @Test
     public void testValidDirectionInputResponse() throws AssertionError {
 
-        Adventure.Layout.Room siebelEntry = siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
-        Adventure.Layout.Room matthewsStreet = siebelAdventureGame.getGameLayout().getStartingRoom();
+        Room siebelEntry = siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
+        Room matthewsStreet = siebelAdventureGame.getGameLayout().getStartingRoom();
 
         assertEquals(siebelEntry, siebelAdventureGame.userInputResponse("GO east", matthewsStreet));
 

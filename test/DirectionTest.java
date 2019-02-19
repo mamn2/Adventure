@@ -20,7 +20,7 @@ public class DirectionTest {
     @Test
     public void directionEqualityTest() throws AssertionError {
 
-        Adventure.Layout.Room.Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
+        Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
                                                                                            .createNewDirection();
 
         testDirection.setDirectionName("North");
@@ -42,7 +42,7 @@ public class DirectionTest {
     @Test
     public void directionInequalityTest() throws AssertionError {
 
-        Adventure.Layout.Room.Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
+        Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
                 .createNewDirection();
 
         testDirection.setDirectionName("North");

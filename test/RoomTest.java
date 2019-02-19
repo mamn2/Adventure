@@ -20,15 +20,15 @@ public class RoomTest {
     @Test
     public void getRoomEqualityTest() throws AssertionError {
 
-        Adventure.Layout.Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
 
         siebel1112Room.setName("Siebel1112");
         siebel1112Room.setDescription("You are in Siebel 1112.  There is space for two code reviews in this room.");
 
-        Adventure.Layout.Room.Direction siebel1112directions = siebel1112Room.createNewDirection();
+        Direction siebel1112directions = siebel1112Room.createNewDirection();
         siebel1112directions.setDirectionName("West");
         siebel1112directions.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
-        Adventure.Layout.Room.Direction[] directions = new Adventure.Layout.Room.Direction[] { siebel1112directions };
+        Direction[] directions = new Direction[] { siebel1112directions };
         siebel1112Room.setPossibleDirections(directions);
 
         assertEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[4]);
@@ -45,15 +45,15 @@ public class RoomTest {
     @Test
     public void roomInequalityTest() throws AssertionError {
 
-        Adventure.Layout.Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
 
         siebel1112Room.setName("Siebel1112");
         siebel1112Room.setDescription("You are in Siebel 1112.  There is space for two code reviews in this room.");
 
-        Adventure.Layout.Room.Direction siebel1112directions = siebel1112Room.createNewDirection();
+        Direction siebel1112directions = siebel1112Room.createNewDirection();
         siebel1112directions.setDirectionName("West");
         siebel1112directions.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
-        Adventure.Layout.Room.Direction[] directions = new Adventure.Layout.Room.Direction[] { siebel1112directions };
+        Direction[] directions = new Direction[] { siebel1112directions };
         siebel1112Room.setPossibleDirections(directions);
 
         assertNotEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[3]);
@@ -63,15 +63,15 @@ public class RoomTest {
     @Test
     public void findRoomAheadTest() throws AssertionError {
 
-        Adventure.Layout.Room acmOffice = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room acmOffice = siebelAdventureGame.getGameLayout().createNewRoom();
 
         acmOffice.setName("AcmOffice");
         acmOffice.setDescription("You are in the ACM office.  There are lots of friendly ACM people.");
 
-        Adventure.Layout.Room.Direction acmOfficeDirections = acmOffice.createNewDirection();
+        Direction acmOfficeDirections = acmOffice.createNewDirection();
         acmOfficeDirections.setDirectionName("South");
         acmOfficeDirections.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry"));
-        acmOffice.setPossibleDirections(new Adventure.Layout.Room.Direction[] { acmOfficeDirections });
+        acmOffice.setPossibleDirections(new Direction[] { acmOfficeDirections });
 
 
         assertEquals(acmOffice, siebelAdventureGame.getGameLayout()
@@ -82,7 +82,7 @@ public class RoomTest {
     @Test
     public void printDirectionsTest() throws AssertionError {
 
-        Adventure.Layout.Room siebelNorth = siebelAdventureGame
+        Room siebelNorth = siebelAdventureGame
                     .getGameLayout().getRoomByName("SiebelNorthHallway");
 
         assertEquals("From here you can go: South, or NorthEast", siebelNorth.printAllDirections());
