@@ -86,6 +86,22 @@ public class Layout {
     }
 
     /**
+     * Getter for item objective
+     * @return gets the item needed to win the game
+     */
+    public Item getItemObjective() {
+        return itemObjective;
+    }
+
+    /**
+     * Setter for item objective
+     * @param itemObjective the item you want to win the game.
+     */
+    public void setItemObjective(Item itemObjective) {
+        this.itemObjective = itemObjective;
+    }
+
+    /**
      * Creates a new room of this instance.
      * Note: this does not add to the Room array.
      * @return a new room of the current instance of Layout

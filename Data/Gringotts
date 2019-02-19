@@ -8,7 +8,6 @@
     {
       "name" : "Diagon Alley",
       "description" : "You are in Diagon Alley, in the intersection by Gringotts Bank.",
-      "monsterExists" : false,
       "directions" : [
         {
           "directionName" : "North",
@@ -33,7 +32,6 @@
     {
       "name" : "Gringotts Bank Lobby",
       "description" : "You are in the lobby of Gringotts Bank, where all the goblins are hard at work.",
-      "monsterExists" : false,
       "directions" : [
         {
           "directionName" : "East",
@@ -63,7 +61,6 @@
     {
       "name" : "Vault Chamber Entrance",
       "description" : "You have entered the chamber which contains all the vaults in this bank.",
-      "monsterExists" : false,
       "directions" : [
         {
           "directionName": "North",
@@ -105,7 +102,6 @@
     {
       "name" : "Harry's Vault",
       "description" : "You have entered Harry Potter's Vault.",
-      "monsterExists" : false,
       "directions" : [
         {
           "directionName" : "South",
@@ -131,7 +127,6 @@
     {
       "name" : "Bellatrix's Vault",
       "description" : "You have entered Bellatrix Lestrange's Vault.",
-      "monsterExists" : false,
       "directions" : [
         {
           "directionName" : "West",
@@ -152,7 +147,6 @@
     {
       "name" : "Dragon's Den",
       "description" : "You have entered the Dragon's Den",
-      "monsterExists" : true,
       "directions" : [
         {
           "directionName" : "Up",

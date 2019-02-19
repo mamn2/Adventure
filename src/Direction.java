@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * State of the potential directions a room permits access to.
  */
@@ -47,7 +49,7 @@ public class Direction {
      * @param playerKeys all the items the player has
      * @return true if the door was unlocked, false if it wasn't.
      */
-    public boolean unlockWithKey(Item[] playerKeys) {
+    public boolean unlockWithKey(List<Item> playerKeys) {
 
         boolean containsAllNecessaryKeys = true;
 
@@ -76,6 +78,14 @@ public class Direction {
             return false;
         }
 
+    }
+
+    /**
+     * Setter for unlocked
+     * @param unlocked is boolean value that says if the room is locked or not
+     */
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
     }
 
     /**

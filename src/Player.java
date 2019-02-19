@@ -3,7 +3,7 @@ import java.util.LinkedList;
 public class Player {
 
     //contains all the items this player has.
-    private LinkedList<Item> items;
+    private LinkedList<Item> items = new LinkedList<>();
 
     /**
      * Getter for list of items that the player has.

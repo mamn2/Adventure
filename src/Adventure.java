@@ -18,23 +18,42 @@ public class Adventure {
     //Layout of the games locations, directions, rooms, etc.
     private Layout gameLayout;
 
+    //A player object containing information about the user playing the game.
+    private Player player;
+
     /**
      * Initializes a new Adventure game through user input.
      */
     public static void main(String[] args) {
 
-        System.out.println("Enter a URL containing information about the game, press space after writing URL: ");
-        Scanner scanner = new Scanner(System.in);
-
         Adventure adventure = null;
 
-        //loops until user initializes adventure.
-        while (adventure == null){
-            adventure = initialize(scanner.nextLine());
+        System.out.println("Would you like to play this game using a file or URL?");
+        System.out.println("Enter 'file' for a filepath or 'URL' for a URL");
+        Scanner scanner = new Scanner(System.in);
+
+        String urlOrFile = scanner.nextLine();
+
+        switch (urlOrFile.toUpperCase()) {
+            case "FILE":
+                adventure = new Adventure(
+                        new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
+                break;
+            /*case "URL":
+                System.out.println("Enter the URL you want to create a JSON for");
+                String url = scanner.nextLine();
+                while (adventure == null) {
+                    adventure = initialize(url);
+                }
+                break;
+            default:
+                System.out.println("Sorry, you must enter 'URL' or 'File'");
+                break;*/
         }
 
         adventure.playGame();
 
+        int i = 0;
     }
 
     /**
@@ -78,8 +97,8 @@ public class Adventure {
      */
     public Adventure(JsonObject jsonData) throws NullPointerException {
 
-
         gameLayout = new Layout();
+        player = new Player();
 
         JsonArray rooms = jsonData.get("rooms").getAsJsonArray();
         Room[] roomsArray = new Room[rooms.size()];
@@ -108,12 +127,40 @@ public class Adventure {
         gameLayout.setAllRooms(roomsArray);
         gameLayout.setStartingRoom(gameLayout.getRoomByName(jsonData.get("startingRoom").getAsString()));
         gameLayout.setEndingRoom(gameLayout.getRoomByName(jsonData.get("endingRoom").getAsString()));
+        gameLayout.setItemObjective(new Item(jsonData.get("itemObjective").getAsJsonObject().get("name").getAsString()));
 
-        //Sets all rooms that a direction points to
-        for (Room room: gameLayout.getAllRooms()) {
-            for (Direction direction : room.getPossibleDirections()) {
+        //iterates through all the rooms in the game
+        for (int roomIndex = 0; roomIndex < gameLayout.getAllRooms().length; roomIndex++) {
+
+            //Contains the current room we are iterating through
+            Room room = gameLayout.getAllRooms()[roomIndex];
+
+            //Iterates through all the directions from the room
+            for (int directionIndex = 0; directionIndex < room.getPossibleDirections().length; directionIndex++) {
+
+                //Contains the current direction we are iterating through
+                Direction direction = room.getPossibleDirections()[directionIndex];
+
                 direction.setRoomAhead(gameLayout.getRoomByName(direction.roomAheadName));
+
+                //Contains the current direction in the form of a JsonObject
+                JsonObject jsonDirection = rooms.get(roomIndex).getAsJsonObject().get("directions").getAsJsonArray()
+                        .get(directionIndex).getAsJsonObject();
+
+                direction.setUnlocked(jsonDirection.get("enabled").getAsBoolean());
+
+                //A JsonArray containing all the necessary keys to open the room
+                JsonArray jsonNecessaryKeys = jsonDirection.get("validKeyNames").getAsJsonArray();
+                Item[] necessaryKeys = new Item[jsonNecessaryKeys.size()];
+
+                for (int necessaryKeysIndex = 0; necessaryKeysIndex < necessaryKeys.length; necessaryKeysIndex++) {
+                    necessaryKeys[necessaryKeysIndex] = new Item(jsonNecessaryKeys.get(necessaryKeysIndex).getAsString());
+                }
+
+                direction.setNecessaryKeys(necessaryKeys);
+
             }
+
         }
 
     }
@@ -139,7 +186,7 @@ public class Adventure {
         //Scanner is used for recording user input
         Scanner scanner = new Scanner(System.in);
 
-        while (currentRoom != gameLayout.getEndingRoom()) {
+        while (!player.getItems().contains(gameLayout.getItemObjective())) {
 
             //Lists the directions a user can travel
             System.out.println(currentRoom.printAllDirections());
@@ -183,15 +230,12 @@ public class Adventure {
                 //Activates when their is no room in the inputted direction
                 System.out.println("I can't " + input);
                 return null;
-            } else if (tempCurrentRoom.equals(gameLayout.getEndingRoom())) {
-                //reaching the last room finishes the game
-                System.out.println(tempCurrentRoom.getDescription());
-                System.out.println("You have reached your final destination.");
-                System.exit(1);
-                //Never executed, but needed by compiler
-                return null;
-            } else {
+            } else if (currentRoom.roomInDirectionIsUnlocked(input.substring(3))) {
                 return tempCurrentRoom;
+            } else if (currentRoom.getDirectionByName(input.substring(3)).unlockWithKey(player.getItems())) {
+                return tempCurrentRoom;
+            } else {
+                return null;
             }
         } else {
             System.out.println("I don't understand " + "'" + input + "'");

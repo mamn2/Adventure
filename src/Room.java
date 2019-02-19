@@ -122,6 +122,37 @@ public class Room {
 
     }
 
+    public boolean roomInDirectionIsUnlocked(String travelDirection) {
+
+        //ensures neither the current room or travelDirection are null
+        if (travelDirection != null) {
+            //iterates through the possible directions you can travel to from current room
+            for (Direction direction : possibleDirections) {
+                //finds a room that it is in that direction
+                if (direction.getDirectionName().toUpperCase().equals(travelDirection.toUpperCase())) {
+                    return direction.isUnlocked();
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    public Direction getDirectionByName(String directionName) {
+        if (directionName == null) {
+            return null;
+        }
+
+        for (Direction direction : possibleDirections) {
+            if (direction.getDirectionName().toUpperCase().equals(directionName.toUpperCase())) {
+                return direction;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Finds the potential directions that a player can move given their current location.
      * @return a String of all the locations they can go to.
@@ -145,6 +176,7 @@ public class Room {
                 roomList.append("or ");
                 roomList.append(possibleDirections[i].getDirectionName());
             }
+
         }
 
         return roomList.toString();
