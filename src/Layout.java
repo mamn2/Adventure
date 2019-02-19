@@ -9,6 +9,9 @@ public class Layout {
     //Name of the last point in the game, reaching this point terminates the game
     private Room endingRoom;
 
+    //The item that the player needs to win the game
+    private Item itemObjective;
+
     //Consists of all the rooms in the game
     private Room[] allRooms;
 

@@ -14,6 +14,12 @@ public class Room {
     //All the possible directions the player can travel
     private Direction[] possibleDirections;
 
+    //Array containing all the items inside this room.
+    private Item[] items;
+
+    //Contains the monster in the room (if one exists).
+    private Monster monster;
+
     /**
      * Getter for name of the room.
      * @return the name of the room.
@@ -39,6 +45,22 @@ public class Room {
     }
 
     /**
+     * Getter for the room monster
+     * @return the monster in the room
+     */
+    public Monster getMonster() {
+        return monster;
+    }
+
+    /**
+     * Getter for all items in the room
+     * @return all the items inside the room
+     */
+    public Item[] getItems() {
+        return items;
+    }
+
+    /**
      * Setter for name of the room.
      * @param name name of the room being set.
      */
@@ -60,6 +82,22 @@ public class Room {
      */
     public void setPossibleDirections(Direction[] possibleDirections) {
         this.possibleDirections = possibleDirections;
+    }
+
+    /**
+     * Setter for all item in the room
+     * @param items all the items in the room
+     */
+    public void setItems(Item[] items) {
+        this.items = items;
+    }
+
+    /**
+     * Setter for the room monster
+     * @param monster is the monster you are setting
+     */
+    public void setMonster(Monster monster) {
+        this.monster = monster;
     }
 
     /**
