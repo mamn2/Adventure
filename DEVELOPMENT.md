@@ -3,8 +3,15 @@
 ----
 ## Fixes to make to original game:
 
-1. Move main method to the top of the class
-2. Replace inner classes with individual classes
+1) Move main method to the top of the class
+2) Replace inner classes with individual classes
+
+----
+## New rules for this game:
+
+1) Player can win the game if they collect the winning item.
+2) Player can carry a max of 3 items
+3) Player can encounter monsters in certain rooms. In order to beat the monster, they need a certain item in their posession.
 
 ----
 ## Development additions for new features
@@ -35,3 +42,8 @@ Player.class
 Layout.class
 
 1) Layout class now contains a player.
+
+###
+Monster.class
+
+1) The new monster class contains the name of the monster and the necessary repellent (Item) to survive the battle.

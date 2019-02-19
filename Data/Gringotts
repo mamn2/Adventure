@@ -1,0 +1,175 @@
+{
+  "startingRoom" : "Diagon Alley",
+  "endingRoom" : "Bellatrix's Vault",
+  "itemObjective" : "the Sword Of Gryffindor",
+  "rooms" : [
+    {
+      "name" : "Diagon Alley",
+      "description" : "You are in Diagon Alley, in the intersection by Gringotts Bank.",
+      "monsterExists" : false,
+      "directions" : [
+        {
+          "directionName" : "North",
+          "room" : "Gringotts Bank Lobby",
+          "enabled" : true,
+          "validKeyNames" : [
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "Hermione"
+        },
+        {
+          "name" : "Ron"
+        },
+        {
+          "name" : "a pigeon"
+        }
+      ]
+    },
+    {
+      "name" : "Gringotts Bank Lobby",
+      "description" : "You are in the lobby of Gringotts Bank, where all the goblins are hard at work.",
+      "monsterExists" : false,
+      "directions" : [
+        {
+          "directionName" : "East",
+          "room": "Vault Chamber Entrance",
+          "enabled" : false,
+          "validKeyNames" : [
+            "Griphook"
+          ]
+        },
+        {
+          "directionName" : "South",
+          "room" : "Diagon Alley",
+          "enabled" : true,
+          "validKeyNames" : [
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "Griphook"
+        },
+        {
+          "name" : "Professor Flitwick"
+        }
+      ]
+    },
+    {
+      "name" : "Vault Chamber Entrance",
+      "description" : "You have entered the chamber which contains all the vaults in this bank.",
+      "monsterExists" : false,
+      "directions" : [
+        {
+          "directionName": "North",
+          "room" : "Harry's Vault",
+          "enabled" : false,
+          "validKeyNames" : [
+            "Griphook"
+          ]
+        },
+        {
+          "directionName" : "East",
+          "room" : "Bellatrix's Vault",
+          "enabled" : false,
+          "validKeyNames" : [
+            "Griphook"
+          ]
+        },
+        {
+          "directionName" : "Down",
+          "room" : "Dragon's Den",
+          "enabled" : true,
+          "validKeyNames" : [
+          ]
+        },
+        {
+          "directionName" : "West",
+          "room" : "Gringott's Bank Lobby",
+          "enabled" : true,
+          "validKeyNames" : [
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "dust on the floor"
+        }
+      ]
+    },
+    {
+      "name" : "Harry's Vault",
+      "description" : "You have entered Harry Potter's Vault.",
+      "monsterExists" : false,
+      "directions" : [
+        {
+          "directionName" : "South",
+          "room" : "Gringott's Bank Lobby",
+          "enabled" : false,
+          "validKeyNames" : [
+            "Griphook"
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "1000 galleons"
+        },
+        {
+          "name" : "1000 sickles"
+        },
+        {
+          "name" : "5000 knuts"
+        }
+      ]
+    },
+    {
+      "name" : "Bellatrix's Vault",
+      "description" : "You have entered Bellatrix Lestrange's Vault.",
+      "monsterExists" : false,
+      "directions" : [
+        {
+          "directionName" : "West",
+          "room" : "Vault Chamber Entrance",
+          "enabled" : false,
+          "validKeyNames" : [
+            "Griphook",
+            "the Sword Of Gryffindor"
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "the Sword Of Gryffindor"
+        }
+      ]
+    },
+    {
+      "name" : "Dragon's Den",
+      "description" : "You have entered the Dragon's Den",
+      "monsterExists" : true,
+      "directions" : [
+        {
+          "directionName" : "Up",
+          "room" : "Vault Chamber Entrance",
+          "enabled" : false,
+          "validKeyName" : [
+            "Griphook"
+          ]
+        }
+      ],
+      "items" : [
+        {
+          "name" : "a possessed goblin"
+        }
+      ],
+      "monster" : {
+        "name" : "a Ukrainian Ironbelly",
+        "repellent" : "Hermione"
+      }
+    }
+  ]
+}

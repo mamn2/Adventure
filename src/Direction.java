@@ -9,6 +9,8 @@ public class Direction {
     //The room in the direction you are facing
     private Room roomAhead;
 
+    public boolean locked;
+
     //Created for deserialization purposes, use "roomAhead"
     public String roomAheadName;
 
