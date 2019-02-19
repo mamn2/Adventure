@@ -168,7 +168,9 @@
       ],
       "monster" : {
         "name" : "a Ukrainian Ironbelly",
-        "repellent" : "Hermione"
+        "repellent" : {
+          "name": "Hermione"
+        }
       }
     }
   ]
