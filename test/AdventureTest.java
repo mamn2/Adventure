@@ -4,8 +4,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AdventureTest {
 
@@ -53,29 +52,44 @@ public class AdventureTest {
     }
 
     @Test
-    public void testInvalidDirectionInput() throws AssertionError {
+    public void testInvalidUserInput() throws AssertionError {
 
-        //goDirectionResponse should return null if the input is not readable
-        //assertNull(gringottsAdventureGame.goDirectionResponse("gophers",
-        //        gringottsAdventureGame.getGameLayout().getStartingRoom()));
+        //userInputResponse should return null if the input is not readable
+        assertNull(gringottsAdventureGame.userInputResponse("gophers"));
 
     }
 
     @Test
-    public void testGoInvalidDirectionInput() throws AssertionError {
+    public void testInvalidDirectionInput() throws AssertionError {
 
-        //assertNull(gringottsAdventureGame.goDirectionResponse("go eas",
-        //        gringottsAdventureGame.getGameLayout().getStartingRoom()));
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley");
+        assertNull(gringottsAdventureGame.userInputResponse("go eas"));
 
     }
 
     @Test
     public void testValidDirectionInputResponse() throws AssertionError {
 
-        Room siebelEntry = gringottsAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
-        Room matthewsStreet = gringottsAdventureGame.getGameLayout().getStartingRoom();
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby");
+        gringottsAdventureGame.userInputResponse("go south");
 
-        //assertEquals(siebelEntry, gringottsAdventureGame.goDirectionResponse("GO east", matthewsStreet));
+        assertEquals(gringottsAdventureGame.currentRoom, gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley"));
+
+    }
+
+    @Test
+    public void testInvalidItemPickup() throws AssertionError {
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley");
+        assertNull(gringottsAdventureGame.userInputResponse("pickup null"));
+
+    }
+
+    @Test
+    public void testValidItemPickup() throws AssertionError {
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley");
+        assertNotNull(gringottsAdventureGame.userInputResponse("pickup hermIone"));
 
     }
 

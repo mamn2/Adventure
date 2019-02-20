@@ -251,13 +251,15 @@ public class Adventure {
 
         } else {
 
-            pickupItemResponse(userInput);
+            Object pickUpInput = pickupItemResponse(userInput);
             if (player.getItems().contains(gameLayout.getItemObjective())) {
                 System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
                 System.out.println("Congratulations, you found " + gameLayout.getItemObjective().getName()
                         + " and won the game!");
                 System.exit(1);
             }
+
+            return pickUpInput;
 
         }
 

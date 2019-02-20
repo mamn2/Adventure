@@ -98,10 +98,18 @@ public class RoomTest {
     @Test
     public void printDirectionsTest() throws AssertionError {
 
-        Room siebelNorth = gringottsAdventureGame
-                    .getGameLayout().getRoomByName("Harry's Vault");
+        Room harryVault = gringottsAdventureGame.getGameLayout().getRoomByName("Harry's Vault");
 
-        assertEquals("From here you can go: South", siebelNorth.printAllDirections());
+        assertEquals("From here you can go: South", harryVault.printAllDirections());
+
+    }
+
+    @Test
+    public void printItemsTest() throws AssertionError {
+
+        Room bellatrixVault = gringottsAdventureGame.getGameLayout().getRoomByName("Bellatrix's Vault");
+
+        assertEquals("From here you can pickup: the Sword Of Gryffindor", bellatrixVault.printAllItems());
 
     }
 
