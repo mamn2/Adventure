@@ -40,7 +40,7 @@ public class Adventure {
         switch (urlOrFile.toUpperCase()) {
             case "FILE":
                 adventure = new Adventure(
-                        new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
+                        new JsonParser().parse(Data.getFileContentsAsString(args[0])).getAsJsonObject());
                 break;
             case "URL":
                 System.out.println("Enter the URL you want to create a JSON for");
