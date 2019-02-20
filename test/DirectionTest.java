@@ -1,32 +1,33 @@
+import com.google.gson.JsonParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class DirectionTest {
 
-    private static Adventure siebelAdventureGame;
+    private static Adventure gringottsAdventureGame;
 
     @BeforeClass
-    public static void setAdventureGame() throws IOException {
+    public static void setAdventureGame() throws IllegalArgumentException {
 
-        siebelAdventureGame = Adventure.initialize("https://courses.engr.illinois.edu/cs126/adventure/siebel.json");
+        gringottsAdventureGame = new Adventure(
+                new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
 
     }
 
     @Test
     public void directionEqualityTest() throws AssertionError {
 
-        Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
-                                                                                           .createNewDirection();
+        Direction testDirection = new Direction();
 
         testDirection.setDirectionName("North");
-        testDirection.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelEastHallway"));
+        testDirection.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby"));
+        testDirection.setNecessaryKeys(new Item[0]);
+        testDirection.setUnlocked(true);
 
-        assertEquals(testDirection, siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
+        assertEquals(testDirection, gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley")
                                                                         .getPossibleDirections()[0]);
 
     }
@@ -35,20 +36,19 @@ public class DirectionTest {
     public void directionNullInequalityTest() throws AssertionError {
 
         assertNotEquals(null,
-                siebelAdventureGame.getGameLayout().getStartingRoom().getPossibleDirections()[0]);
+                gringottsAdventureGame.getGameLayout().getStartingRoom().getPossibleDirections()[0]);
 
     }
 
     @Test
     public void directionInequalityTest() throws AssertionError {
 
-        Direction testDirection = siebelAdventureGame.getGameLayout().getRoomByName("Siebel1314")
-                .createNewDirection();
+        Direction testDirection = new Direction();
 
         testDirection.setDirectionName("North");
-        testDirection.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelEastHallway"));
+        testDirection.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby"));
 
-        assertNotEquals(testDirection, siebelAdventureGame.getGameLayout().getRoomByName("MatthewsStreet")
+        assertNotEquals(testDirection, gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby")
                 .getPossibleDirections()[0]);
 
     }

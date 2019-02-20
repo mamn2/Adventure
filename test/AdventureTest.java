@@ -1,54 +1,53 @@
-import org.junit.BeforeClass;
+import com.google.gson.JsonParser;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class AdventureTest {
 
-    private static Adventure siebelAdventureGame;
+    private static Adventure gringottsAdventureGame;
 
     @Rule
     public final ExpectedSystemExit exit = ExpectedSystemExit.none();
 
-    @BeforeClass
-    public static void setAdventureGame() throws IOException {
+    @Before
+    public void setAdventureGame() throws IllegalArgumentException {
 
-        siebelAdventureGame = Adventure.initialize("https://courses.engr.illinois.edu/cs126/adventure/siebel.json");
+        gringottsAdventureGame = new Adventure(
+                new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
 
     }
 
     @Test
     public void nonURLTest() throws AssertionError {
 
-        assertNull(Adventure.initialize("not_a_url"));
+        assertNull(Adventure.initializeURL("not_a_url"));
 
     }
 
     @Test
     public void invalidURLTest() throws AssertionError {
 
-        assertNull(Adventure.initialize("www.google.com"));
+        assertNull(Adventure.initializeURL("www.google.com"));
 
     }
 
     @Test
     public void invalidJSONTest() throws AssertionError {
 
-        assertNull(Adventure.initialize("http://api.tvmaze.com/singlesearch/shows?q=mr-robot&embed=episodes"));
+        assertNull(Adventure.initializeURL("http://api.tvmaze.com/singlesearch/shows?q=mr-robot&embed=episodes"));
 
     }
 
     @Test
     public void validJSONTest() throws AssertionError {
 
-        assertTrue(Adventure.initialize(
-                "https://courses.engr.illinois.edu/cs126/sp2019/adventure/student_submissions/CustomAdventureGame.json")
+        assertTrue(Adventure.initializeURL(
+                "https://pastebin.com/raw/YXd9RmGh")
                 instanceof Adventure);
 
     }
@@ -57,26 +56,26 @@ public class AdventureTest {
     public void testInvalidDirectionInput() throws AssertionError {
 
         //goDirectionResponse should return null if the input is not readable
-        assertNull(siebelAdventureGame.goDirectionResponse("gophers",
-                siebelAdventureGame.getGameLayout().getStartingRoom()));
+        //assertNull(gringottsAdventureGame.goDirectionResponse("gophers",
+        //        gringottsAdventureGame.getGameLayout().getStartingRoom()));
 
     }
 
     @Test
     public void testGoInvalidDirectionInput() throws AssertionError {
 
-        assertNull(siebelAdventureGame.goDirectionResponse("go eas",
-                siebelAdventureGame.getGameLayout().getStartingRoom()));
+        //assertNull(gringottsAdventureGame.goDirectionResponse("go eas",
+        //        gringottsAdventureGame.getGameLayout().getStartingRoom()));
 
     }
 
     @Test
     public void testValidDirectionInputResponse() throws AssertionError {
 
-        Room siebelEntry = siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
-        Room matthewsStreet = siebelAdventureGame.getGameLayout().getStartingRoom();
+        Room siebelEntry = gringottsAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
+        Room matthewsStreet = gringottsAdventureGame.getGameLayout().getStartingRoom();
 
-        assertEquals(siebelEntry, siebelAdventureGame.goDirectionResponse("GO east", matthewsStreet));
+        //assertEquals(siebelEntry, gringottsAdventureGame.goDirectionResponse("GO east", matthewsStreet));
 
     }
 
@@ -84,7 +83,7 @@ public class AdventureTest {
     public void testExitInput() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.goDirectionResponse("exit", siebelAdventureGame.getGameLayout().getStartingRoom());
+        gringottsAdventureGame.userInputResponse("exit");
 
     }
 
@@ -92,19 +91,27 @@ public class AdventureTest {
     public void testQuitInput() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.goDirectionResponse("quit", siebelAdventureGame.getGameLayout().getAllRooms()[3]);
+        gringottsAdventureGame.userInputResponse("quit");
 
     }
 
     @Test
-    public void testGameOver() throws AssertionError {
+    public void testGameWin() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.goDirectionResponse("go soUth",
-                siebelAdventureGame.getGameLayout().getRoomByName("SiebelEastHallway"));
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Bellatrix's Vault");
+        gringottsAdventureGame.userInputResponse("pickup the Sword of Gryffindor");
 
     }
 
+    @Test
+    public void testGameLostToMonster() throws AssertionError {
+
+        exit.expectSystemExitWithStatus(1);
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance");
+        gringottsAdventureGame.userInputResponse("go down");
+
+    }
 
 
 }

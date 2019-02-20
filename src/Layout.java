@@ -101,13 +101,5 @@ public class Layout {
         this.itemObjective = itemObjective;
     }
 
-    /**
-     * Creates a new room of this instance.
-     * Note: this does not add to the Room array.
-     * @return a new room of the current instance of Layout
-     */
-    public Room createNewRoom() {
-        return new Room();
-    }
 
 }

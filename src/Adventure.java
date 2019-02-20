@@ -19,7 +19,10 @@ public class Adventure {
     private Layout gameLayout;
 
     //A player object containing information about the user playing the game.
-    private Player player;
+    public Player player;
+
+    //Current room that the player is in.
+    public Room currentRoom;
 
     /**
      * Initializes a new Adventure game through user input.
@@ -43,7 +46,7 @@ public class Adventure {
                 System.out.println("Enter the URL you want to create a JSON for");
                 String url = scanner.nextLine();
                 while (adventure == null) {
-                    adventure = initialize(url);
+                    adventure = initializeURL(url);
                 }
                 break;
             default:
@@ -61,7 +64,7 @@ public class Adventure {
      * @param url is a url containing a JSON of the Adventure structure.
      * @return a new Adventure class, or null if it is invalid.
      */
-    public static Adventure initialize(String url) {
+    public static Adventure initializeURL(String url) {
 
         try {
             URL urlInput = new URL(url);
@@ -106,7 +109,7 @@ public class Adventure {
         //Goes through all the rooms in the JSON and converts them into an array of type Room.
         for (int i = 0; i < roomsArray.length; i++) {
 
-            //takes all fields from JSON and uses them to initialize fields in Room class.
+            //takes all fields from JSON and uses them to initializeURL fields in Room class.
             roomsArray[i] = new Gson().fromJson(rooms.get(i), Room.class);
 
             //Stores all directions for room in a JsonArray.
@@ -115,7 +118,7 @@ public class Adventure {
 
             //Goes through all the directions in each room and converts them into an array.
             for (int j = 0; j < directionsInRoom.length; j++) {
-                //takes all fields from JSON and uses to initialize fields in Direction class.
+                //takes all fields from JSON and uses to initializeURL fields in Direction class.
                 directionsInRoom[j] = new Gson().fromJson(directions.get(j), Direction.class);
                 directionsInRoom[j].roomAheadName = directions.get(j).getAsJsonObject().get("room").getAsString();
             }
@@ -179,9 +182,11 @@ public class Adventure {
     private void playGame() {
 
         //Initializes game
-        Room currentRoom = gameLayout.getStartingRoom();
+        currentRoom = gameLayout.getStartingRoom();
         System.out.println(currentRoom.getDescription());
         System.out.println("Your journey begins here");
+        System.out.println(currentRoom.printAllDirections());
+        System.out.println(currentRoom.printAllItems());
 
         //Scanner is used for recording user input
         Scanner scanner = new Scanner(System.in);
@@ -190,88 +195,92 @@ public class Adventure {
         while (!player.getItems().contains(gameLayout.getItemObjective())) {
 
             //Lists the directions a user can travel
-            System.out.println(currentRoom.printAllDirections());
-            System.out.println(currentRoom.printAllItems());
+            String userInput = scanner.nextLine();
 
-            boolean newLocation = false;
-            while (!newLocation) {
-                String userInput = scanner.nextLine();
-
-                if (userInput.length() <= 3) {
-
-                    System.out.println("I don't understand " + userInput);
-                    continue;
-
-                } else if (userInput.equalsIgnoreCase("exit")
-                        || userInput.equalsIgnoreCase("quit")) {
-
-                    System.exit(-1);
-                    return;
-
-                } else if (userInput.substring(0, 3).toUpperCase().equals("GO ")) {
-
-                    Room tempCurrentRoom = goDirectionResponse(userInput, currentRoom);
-                    if (tempCurrentRoom != null) {
-
-                        currentRoom = tempCurrentRoom;
-                        System.out.println("\n-------------------------------------------------\n");
-                        System.out.println(currentRoom.getDescription());
-                        break;
-
-                    }
-
-                } else if (userInput.length() <= 7) {
-
-                    System.out.println("I don't understand " + userInput);
-
-                } else if (userInput.substring(0, 7).toUpperCase().equals("REMOVE ")) {
-
-                    removeItemResponse(userInput);
-
-                } else {
-
-                    pickupItemResponse(userInput, currentRoom);
-                    if (player.getItems().contains(gameLayout.getItemObjective())) {
-                        System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-                        System.out.println("Congratulations, you found " + gameLayout.getItemObjective().getName()
-                                + " and won the game!");
-                        break;
-                    }
-
-                }
-            }
-
-            if (currentRoom.getMonster() != null) {
-
-                if (!player.playerHasMonsterRepellent(currentRoom.getMonster())) {
-                    System.out.println("You encountered a " + currentRoom.getMonster().name + " and died");
-                    System.exit(1);
-                } else {
-                    System.out.println("You encountered a monster, but defeated it");
-                }
-
+            if (userInputResponse(userInput) instanceof Room) {
+                System.out.println(currentRoom.printAllDirections());
+                System.out.println(currentRoom.printAllItems());
             }
 
         }
 
     }
 
+    public Object userInputResponse(String userInput) {
+
+        if (userInput.length() <= 3) {
+
+            System.out.println("I don't understand " + userInput);
+
+        } else if (userInput.equalsIgnoreCase("exit")
+                || userInput.equalsIgnoreCase("quit")) {
+
+            System.exit(1);
+            return null;
+
+        } else if (userInput.substring(0, 3).equalsIgnoreCase("GO ")) {
+
+            Room tempCurrentRoom = goDirectionResponse(userInput);
+            if (tempCurrentRoom != null) {
+
+                currentRoom = tempCurrentRoom;
+                System.out.println("\n-------------------------------------------------\n");
+                System.out.println(currentRoom.getDescription());
+
+                if (currentRoom.getMonster() != null) {
+
+                    if (!player.playerHasMonsterRepellent(currentRoom.getMonster())) {
+                        System.out.println("You encountered a " + currentRoom.getMonster().name + " and died");
+                        System.exit(1);
+                    } else {
+                        System.out.println("You encountered a monster, but defeated it");
+                    }
+
+                }
+
+                return tempCurrentRoom;
+
+            }
+
+        } else if (userInput.length() <= 7) {
+
+            System.out.println("I don't understand " + userInput);
+
+        } else if (userInput.substring(0, 7).equalsIgnoreCase("REMOVE ")) {
+
+            return removeItemResponse(userInput);
+
+        } else {
+
+            pickupItemResponse(userInput);
+            if (player.getItems().contains(gameLayout.getItemObjective())) {
+                System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                System.out.println("Congratulations, you found " + gameLayout.getItemObjective().getName()
+                        + " and won the game!");
+                System.exit(1);
+            }
+
+        }
+
+        return null;
+
+    }
+
     /**
      * This function picks up an item based on the user input
      * @param input is the user input
-     * @param currentRoom is the current room we are in
      * @return the Item you are picking up, null if you can't pickup the item.
      */
-    public Item pickupItemResponse(String input, Room currentRoom) {
+    public Item pickupItemResponse(String input) {
 
         if (input == null || input.length() < 8) {
             return null;
         }
 
-        if (input.substring(0, 7).toUpperCase().equals("PICKUP ")) {
+        if (input.substring(0, 7).equalsIgnoreCase("pickup ")) {
 
             for (Item item : currentRoom.getItems()) {
-                if (item.getName().toUpperCase().equals(input.substring(7).toUpperCase())) {
+                if (item.getName().equalsIgnoreCase(input.substring(7))) {
                     if (player.getItems().contains(item)) {
                         System.out.println("You already have " + item.getName());
                         return item;
@@ -301,29 +310,33 @@ public class Adventure {
      */
     public Item removeItemResponse(String input) {
 
-        for (Item item : player.getItems()) {
-            if (item.getName().equalsIgnoreCase(input.substring(7))) {
-                player.removeFromItems(item);
-                return item;
+        if (input.substring(0, 7).equalsIgnoreCase("remove ")) {
+            for (Item item : player.getItems()) {
+                if (item.getName().equalsIgnoreCase(input.substring(7))) {
+                    player.removeFromItems(item);
+                    return item;
+                }
             }
-        }
 
-        System.out.println("I can't " + input);
-        return null;
+            System.out.println("I can't " + input);
+            return null;
+        } else {
+            System.out.println("I don't understand " + "'" + input + "'");
+            return null;
+        }
 
     }
 
     /**
      * Determines what to do if the user wants to go somewhere
      * @param input is the input the player made in the console
-     * @param currentRoom is the current room the user is in
      * @return a room if there is one, null if the user entered the wrong input.
      *         System exits if the user prompts it to exit.
      */
-    public Room goDirectionResponse(String input, Room currentRoom) {
+    public Room goDirectionResponse(String input) {
 
 
-        if (input.substring(0, 3).toUpperCase().equals("GO ")) {
+        if (input.substring(0, 3).equalsIgnoreCase("GO ")) {
 
             //looks for rooms in direction specified by user
             //if there is no room in said direction, return null

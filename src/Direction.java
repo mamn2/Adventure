@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -106,6 +107,10 @@ public class Direction {
         this.roomAhead = room;
     }
 
+    public Item[] getNecessaryKeys() {
+        return necessaryKeys;
+    }
+
     /**
      * Setter for necessary keys
      */
@@ -128,7 +133,9 @@ public class Direction {
         Direction otherDirection = (Direction) other;
 
         return otherDirection.getDirectionName().equals(this.directionName)
-                && otherDirection.getRoomAhead().equals(this.roomAhead);
+                && otherDirection.getRoomAhead().equals(this.roomAhead)
+                && (otherDirection.isUnlocked() == this.isUnlocked())
+                && Arrays.deepEquals(otherDirection.getNecessaryKeys(), this.necessaryKeys);
 
     }
 

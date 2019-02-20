@@ -112,7 +112,7 @@ public class Room {
             //iterates through the possible directions you can travel to from current room
             for (Direction direction : possibleDirections) {
                 //finds a room that it is in that direction
-                if (direction.getDirectionName().toUpperCase().equals(travelDirection.toUpperCase())) {
+                if (direction.getDirectionName().equalsIgnoreCase(travelDirection)) {
                     return direction.getRoomAhead();
                 }
             }
@@ -134,7 +134,7 @@ public class Room {
             //iterates through the possible directions you can travel to from current room
             for (Direction direction : possibleDirections) {
                 //finds a room that it is in that direction
-                if (direction.getDirectionName().toUpperCase().equals(travelDirection.toUpperCase())) {
+                if (direction.getDirectionName().equalsIgnoreCase(travelDirection)) {
                     return direction.isUnlocked();
                 }
             }
@@ -155,7 +155,7 @@ public class Room {
         }
 
         for (Direction direction : possibleDirections) {
-            if (direction.getDirectionName().toUpperCase().equals(directionName.toUpperCase())) {
+            if (direction.getDirectionName().equalsIgnoreCase(directionName)) {
                 return direction;
             }
         }
@@ -224,15 +224,6 @@ public class Room {
     }
 
     /**
-     * Creates a new direction of this instance of room.
-     * Note: This does not add to the Direction array.
-     * @return a new direction of this instance of Room.
-     */
-    public Direction createNewDirection() {
-        return new Direction();
-    }
-
-    /**
      * Tests for the equality of two rooms.
      * @param other is the other object being compared to this instance of Room.
      * @return true if they are equal, false if they are not equal.
@@ -247,7 +238,8 @@ public class Room {
         Room otherRoom = (Room) other;
         return otherRoom.getName().equals(this.name)
                 && otherRoom.getDescription().equals(this.description)
-                && Arrays.deepEquals(otherRoom.getPossibleDirections(), this.possibleDirections);
+                && Arrays.deepEquals(otherRoom.getPossibleDirections(), this.possibleDirections)
+                && otherRoom.getMonster() == this.monster;
 
     }
 }

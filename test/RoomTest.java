@@ -1,91 +1,107 @@
+import com.google.gson.JsonParser;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class RoomTest {
 
-    private static Adventure siebelAdventureGame;
+    private static Adventure gringottsAdventureGame;
 
     @BeforeClass
-    public static void setAdventureGame() throws IOException {
+    public static void setAdventureGame() throws IllegalArgumentException {
 
-        siebelAdventureGame = Adventure.initialize("https://courses.engr.illinois.edu/cs126/adventure/siebel.json");
+        gringottsAdventureGame = new Adventure(
+                new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
 
     }
 
     @Test
     public void getRoomEqualityTest() throws AssertionError {
 
-        Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room bellatrixVault = new Room();
+        bellatrixVault.setName("Bellatrix's Vault");
+        bellatrixVault.setDescription("You have entered Bellatrix Lestrange's Vault.");
 
-        siebel1112Room.setName("Siebel1112");
-        siebel1112Room.setDescription("You are in Siebel 1112.  There is space for two code reviews in this room.");
+        Direction bellatrixVaultDirections = new Direction();
+        bellatrixVaultDirections.setDirectionName("West");
+        bellatrixVaultDirections.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance"));
+        bellatrixVaultDirections.setNecessaryKeys(new Item[] { new Item("Griphook"),
+                new Item("the Sword Of Gryffindor")
+        });
+        bellatrixVaultDirections.setUnlocked(false);
+        bellatrixVault.setPossibleDirections(new Direction[] { bellatrixVaultDirections });
 
-        Direction siebel1112directions = siebel1112Room.createNewDirection();
-        siebel1112directions.setDirectionName("West");
-        siebel1112directions.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
-        Direction[] directions = new Direction[] { siebel1112directions };
-        siebel1112Room.setPossibleDirections(directions);
+        bellatrixVault.setItems(new Item[] { new Item("the Sword of Gryffindor") });
+        bellatrixVault.setMonster(null);
 
-        assertEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[4]);
+        assertEquals(bellatrixVault, gringottsAdventureGame.getGameLayout().getRoomByName("Bellatrix's Vault"));
 
     }
 
     @Test
     public void roomNullInequalityTest() throws AssertionError {
 
-        assertNotEquals(null, siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
+        assertNotEquals(null, gringottsAdventureGame.getGameLayout().getRoomByName("Harry's Vault"));
 
     }
 
     @Test
     public void roomInequalityTest() throws AssertionError {
 
-        Room siebel1112Room = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room diagonAlley = new Room();
+        diagonAlley.setName("Diagon Alley");
+        diagonAlley.setDescription("You are in Diagon Alley, in the intersection by Gringotts Bank.");
 
-        siebel1112Room.setName("Siebel1112");
-        siebel1112Room.setDescription("You are in Siebel 1112.  There is space for two code reviews in this room.");
+        Direction diagonAlleyDirection = new Direction();
+        diagonAlleyDirection.setDirectionName("North");
+        diagonAlleyDirection.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby"));
+        diagonAlleyDirection.setUnlocked(true);
+        diagonAlleyDirection.setNecessaryKeys(new Item[0]);
+        diagonAlley.setPossibleDirections(new Direction[] { diagonAlleyDirection });
 
-        Direction siebel1112directions = siebel1112Room.createNewDirection();
-        siebel1112directions.setDirectionName("West");
-        siebel1112directions.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelNorthHallway"));
-        Direction[] directions = new Direction[] { siebel1112directions };
-        siebel1112Room.setPossibleDirections(directions);
+        Item hermione = new Item("Hermione");
+        Item ron = new Item("Ron");
+        Item pigeon = new Item("a pigeon");
+        diagonAlley.setItems(new Item[] { hermione, ron, pigeon });
 
-        assertNotEquals(siebel1112Room, siebelAdventureGame.getGameLayout().getAllRooms()[3]);
+        assertNotEquals(diagonAlley, gringottsAdventureGame.getGameLayout().getAllRooms()[3]);
 
     }
 
     @Test
     public void findRoomAheadTest() throws AssertionError {
 
-        Room acmOffice = siebelAdventureGame.getGameLayout().createNewRoom();
+        Room diagonAlley = new Room();
+        diagonAlley.setName("Diagon Alley");
+        diagonAlley.setDescription("You are in Diagon Alley, in the intersection by Gringotts Bank.");
 
-        acmOffice.setName("AcmOffice");
-        acmOffice.setDescription("You are in the ACM office.  There are lots of friendly ACM people.");
+        Direction diagonAlleyDirection = new Direction();
+        diagonAlleyDirection.setDirectionName("North");
+        diagonAlleyDirection.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby"));
+        diagonAlleyDirection.setUnlocked(true);
+        diagonAlleyDirection.setNecessaryKeys(new Item[0]);
+        diagonAlley.setPossibleDirections(new Direction[] { diagonAlleyDirection });
 
-        Direction acmOfficeDirections = acmOffice.createNewDirection();
-        acmOfficeDirections.setDirectionName("South");
-        acmOfficeDirections.setRoomAhead(siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry"));
-        acmOffice.setPossibleDirections(new Direction[] { acmOfficeDirections });
+        Item hermione = new Item("Hermione");
+        Item ron = new Item("Ron");
+        Item pigeon = new Item("a pigeon");
+        diagonAlley.setItems(new Item[] { hermione, ron, pigeon });
 
 
-        assertEquals(acmOffice, siebelAdventureGame.getGameLayout()
-                .getRoomByName("SiebelEntry").findRoomsInDirection("Northeast"));
+        assertEquals(diagonAlley, gringottsAdventureGame.getGameLayout()
+                .getRoomByName("Gringotts Bank Lobby").findRoomsInDirection("South"));
 
     }
 
     @Test
     public void printDirectionsTest() throws AssertionError {
 
-        Room siebelNorth = siebelAdventureGame
-                    .getGameLayout().getRoomByName("SiebelNorthHallway");
+        Room siebelNorth = gringottsAdventureGame
+                    .getGameLayout().getRoomByName("Harry's Vault");
 
-        assertEquals("From here you can go: South, or NorthEast", siebelNorth.printAllDirections());
+        assertEquals("From here you can go: South", siebelNorth.printAllDirections());
 
     }
 
