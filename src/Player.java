@@ -45,7 +45,12 @@ public class Player {
 
     }
 
-    public boolean checkPlayerHasMonsterRepellent(Monster monster) {
+    /**
+     * This functions checks if a player contains the necessary monster repellent to survive.
+     * @param monster is the monster that is being encountered.
+     * @return true if the players has the monster repellent, false if they don't
+     */
+    public boolean playerHasMonsterRepellent(Monster monster) {
         boolean playerHasMonsterRepellent = false;
         for (Item item : items) {
             if (item.equals(monster.repellent)) {

@@ -122,6 +122,11 @@ public class Room {
 
     }
 
+    /**
+     * Checks if the room in the direction is unlocked from our current location
+     * @param travelDirection is the direction in which we are travelling as dictated by user
+     * @return true if the room is unlocked, false if it is locked
+     */
     public boolean roomInDirectionIsUnlocked(String travelDirection) {
 
         //ensures neither the current room or travelDirection are null
@@ -139,6 +144,11 @@ public class Room {
 
     }
 
+    /**
+     * Gets a direction object by the directionName
+     * @param directionName is the name of the direction (North, south, etc.)
+     * @return a direction object containing information about the contents in a specific direction
+     */
     public Direction getDirectionByName(String directionName) {
         if (directionName == null) {
             return null;
@@ -183,6 +193,10 @@ public class Room {
 
     }
 
+    /**
+     * Prints all the items currently in a room
+     * @return all the items formatted in a string for nice viewing
+     */
     public String printAllItems() {
 
         StringBuilder itemList = new StringBuilder();

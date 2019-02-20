@@ -186,6 +186,7 @@ public class Adventure {
         //Scanner is used for recording user input
         Scanner scanner = new Scanner(System.in);
 
+        //Game ends when the player contains their objective
         while (!player.getItems().contains(gameLayout.getItemObjective())) {
 
             //Lists the directions a user can travel
@@ -193,62 +194,91 @@ public class Adventure {
             System.out.println(currentRoom.printAllItems());
 
             boolean newLocation = false;
-            while (!newLocation && !player.getItems().contains(gameLayout.getItemObjective())) {
+            while (!newLocation) {
                 String userInput = scanner.nextLine();
 
                 if (userInput.length() <= 3) {
+
+                    System.out.println("I don't understand " + userInput);
                     continue;
+
+                } else if (userInput.equalsIgnoreCase("exit")
+                        || userInput.equalsIgnoreCase("quit")) {
+
+                    System.exit(-1);
+                    return;
+
                 } else if (userInput.substring(0, 3).toUpperCase().equals("GO ")) {
+
                     Room tempCurrentRoom = goDirectionResponse(userInput, currentRoom);
                     if (tempCurrentRoom != null) {
+
                         currentRoom = tempCurrentRoom;
+                        System.out.println("\n-------------------------------------------------\n");
                         System.out.println(currentRoom.getDescription());
                         break;
+
                     }
+
+                } else if (userInput.length() <= 7) {
+
+                    System.out.println("I don't understand " + userInput);
+
                 } else if (userInput.substring(0, 7).toUpperCase().equals("REMOVE ")) {
+
                     removeItemResponse(userInput);
+
                 } else {
+
                     pickupItemResponse(userInput, currentRoom);
                     if (player.getItems().contains(gameLayout.getItemObjective())) {
+                        System.out.println("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
                         System.out.println("Congratulations, you found " + gameLayout.getItemObjective().getName()
                                 + " and won the game!");
                         break;
                     }
+
                 }
             }
 
             if (currentRoom.getMonster() != null) {
-                if (!player.checkPlayerHasMonsterRepellent(currentRoom.getMonster())) {
+
+                if (!player.playerHasMonsterRepellent(currentRoom.getMonster())) {
                     System.out.println("You encountered a " + currentRoom.getMonster().name + " and died");
                     System.exit(1);
                 } else {
                     System.out.println("You encountered a monster, but defeated it");
                 }
+
             }
 
         }
 
     }
 
+    /**
+     * This function picks up an item based on the user input
+     * @param input is the user input
+     * @param currentRoom is the current room we are in
+     * @return the Item you are picking up, null if you can't pickup the item.
+     */
     public Item pickupItemResponse(String input, Room currentRoom) {
 
         if (input == null || input.length() < 8) {
             return null;
         }
 
-        //Tests for base case exit or quit, case insensitive
-        if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
-
-            System.exit(1);
-            //Never executed, but needed by compiler
-            return null;
-
-        } else if (input.substring(0, 7).toUpperCase().equals("PICKUP ")) {
+        if (input.substring(0, 7).toUpperCase().equals("PICKUP ")) {
 
             for (Item item : currentRoom.getItems()) {
                 if (item.getName().toUpperCase().equals(input.substring(7).toUpperCase())) {
-                    player.addToItems(item);
-                    return item;
+                    if (player.getItems().contains(item)) {
+                        System.out.println("You already have " + item.getName());
+                        return item;
+                    } else {
+                        player.addToItems(item);
+                        return item;
+                    }
                 }
             }
 
@@ -263,11 +293,13 @@ public class Adventure {
 
     }
 
+    /**
+     * This function will respond to when a user asks to remove an item.
+     * The function will only remove items that it can remove.
+     * @param input is the user input
+     * @return the item that is being removed
+     */
     public Item removeItemResponse(String input) {
-
-        if (input == null) {
-            return null;
-        }
 
         for (Item item : player.getItems()) {
             if (item.getName().equalsIgnoreCase(input.substring(7))) {
@@ -276,12 +308,13 @@ public class Adventure {
             }
         }
 
+        System.out.println("I can't " + input);
         return null;
 
     }
 
     /**
-     * Determines what steps to take given the user input. Separated for testing purposes.
+     * Determines what to do if the user wants to go somewhere
      * @param input is the input the player made in the console
      * @param currentRoom is the current room the user is in
      * @return a room if there is one, null if the user entered the wrong input.
@@ -289,9 +322,6 @@ public class Adventure {
      */
     public Room goDirectionResponse(String input, Room currentRoom) {
 
-        if (input == null || input.length() < 3) {
-            return null;
-        }
 
         if (input.substring(0, 3).toUpperCase().equals("GO ")) {
 

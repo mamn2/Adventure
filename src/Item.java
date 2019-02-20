@@ -3,12 +3,6 @@ public class Item {
     private String name;
 
     /**
-     * Empty constructor for deserialization purposes.
-     */
-    public Item() {
-    }
-
-    /**
      * Constructor for creating a new Item.
      * @param name is the name of the new Item you are creating.
      */
