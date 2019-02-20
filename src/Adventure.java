@@ -205,6 +205,11 @@ public class Adventure {
 
     }
 
+    /**
+     * Takes a string of user input, and determines the action it is implying
+     * @param userInput is the input from the console.
+     * @return an object that has been changed as the result of the user input
+     */
     public Object userInputResponse(String userInput) {
 
         if (userInput.length() <= 3) {

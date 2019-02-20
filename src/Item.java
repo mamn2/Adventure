@@ -25,6 +25,7 @@ public class Item {
      */
     @Override
     public boolean equals(Object otherObject) {
+
         if (!(otherObject instanceof Item)) {
             return false;
         }
@@ -33,6 +34,7 @@ public class Item {
 
         //Returns if the names are equal or not
         return this.name.equals(otherItem.name);
+
     }
 
 }
