@@ -18,6 +18,20 @@ public class DirectionTest {
     }
 
     @Test
+    public void testGetDirectionByName() throws AssertionError {
+
+        Direction northOfAlley = new Direction();
+        northOfAlley.setUnlocked(true);
+        northOfAlley.setNecessaryKeys(new Item[0]);
+        northOfAlley.setRoomAhead(gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby"));
+        northOfAlley.setDirectionName("North");
+
+        assertEquals(northOfAlley, gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley")
+                .getDirectionByName("North"));
+
+    }
+
+    @Test
     public void directionEqualityTest() throws AssertionError {
 
         Direction testDirection = new Direction();

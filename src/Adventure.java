@@ -51,7 +51,7 @@ public class Adventure {
                 break;
             default:
                 System.out.println("Sorry, you must enter 'URL' or 'File'");
-                main(null);
+                main(args);
                 return;
         }
 
@@ -190,7 +190,7 @@ public class Adventure {
         //Scanner is used for recording user input
         Scanner scanner = new Scanner(System.in);
 
-        //Game ends when the player contains their objective
+        //Game ends when the player contains their objective or a helper function induces a system exit
         while (!player.getItems().contains(gameLayout.getItemObjective())) {
 
             //Lists the directions a user can travel
@@ -264,6 +264,7 @@ public class Adventure {
                 System.exit(1);
             }
 
+            //If the pickup input is null, then it will simply return null
             return pickUpInput;
 
         }
@@ -316,6 +317,7 @@ public class Adventure {
      */
     public Item removeItemResponse(String input) {
 
+        //Double checks input for testing purposes
         if (input.substring(0, 7).equalsIgnoreCase("remove ")) {
             for (Item item : player.getItems()) {
                 if (item.getName().equalsIgnoreCase(input.substring(7))) {
@@ -342,25 +344,18 @@ public class Adventure {
     public Room goDirectionResponse(String input) {
 
 
-        if (input.substring(0, 3).equalsIgnoreCase("GO ")) {
-
-            //looks for rooms in direction specified by user
-            //if there is no room in said direction, return null
-            Room tempCurrentRoom = currentRoom.findRoomsInDirection(input.substring(3));
-            if (tempCurrentRoom == null) {
-                //Activates when their is no room in the inputted direction
-                System.out.println("I can't " + input);
-                return null;
-            } else if (currentRoom.roomInDirectionIsUnlocked(input.substring(3))) {
-                return tempCurrentRoom;
-            } else if (currentRoom.getDirectionByName(input.substring(3)).unlockWithKey(player.getItems())) {
-                return tempCurrentRoom;
-            } else {
-                return null;
-            }
-
+        //looks for rooms in direction specified by user
+        //if there is no room in said direction, return null
+        Room tempCurrentRoom = currentRoom.findRoomsInDirection(input.substring(3));
+        if (tempCurrentRoom == null) {
+            //Activates when their is no room in the inputted direction
+            System.out.println("I can't " + input);
+            return null;
+        } else if (currentRoom.roomInDirectionIsUnlocked(input.substring(3))) {
+            return tempCurrentRoom;
+        } else if (currentRoom.getDirectionByName(input.substring(3)).unlockWithKey(player.getItems())) {
+            return tempCurrentRoom;
         } else {
-            System.out.println("I don't understand " + "'" + input + "'");
             return null;
         }
 

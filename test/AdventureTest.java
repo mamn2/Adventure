@@ -127,5 +127,18 @@ public class AdventureTest {
 
     }
 
+    @Test
+    public void testPlayerBeatsMonster() throws AssertionError {
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Diagon Alley");
+        gringottsAdventureGame.player.addToItems(new Item("Hermione"));
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance");
+        gringottsAdventureGame.userInputResponse("go down");
+
+        //By the rule defined, we should not have a system exit.
+
+    }
+
 
 }

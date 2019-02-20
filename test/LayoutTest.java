@@ -2,8 +2,7 @@ import com.google.gson.JsonParser;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 
 public class LayoutTest {
@@ -98,6 +97,29 @@ public class LayoutTest {
     public void getNullRoomTest() throws AssertionError {
 
         assertNull(gringottsAdventureGame.getGameLayout().getRoomByName(null));
+
+    }
+
+    @Test
+    public void testKeyIsNecessary() throws AssertionError {
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance");
+        gringottsAdventureGame.userInputResponse("go north");
+
+        assertNotEquals(gringottsAdventureGame.getGameLayout().getRoomByName("Harry's Vault"),
+                gringottsAdventureGame.currentRoom);
+
+    }
+
+    @Test
+    public void testKeyWasUsed() throws AssertionError {
+
+        gringottsAdventureGame.currentRoom = gringottsAdventureGame.getGameLayout().getRoomByName("Gringotts Bank Lobby");
+        gringottsAdventureGame.userInputResponse("pickup griphook");
+        gringottsAdventureGame.userInputResponse("go east");
+
+        assertEquals(gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance"),
+                gringottsAdventureGame.currentRoom);
 
     }
 

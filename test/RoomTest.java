@@ -98,9 +98,9 @@ public class RoomTest {
     @Test
     public void printDirectionsTest() throws AssertionError {
 
-        Room harryVault = gringottsAdventureGame.getGameLayout().getRoomByName("Harry's Vault");
+        Room vaultEntrance = gringottsAdventureGame.getGameLayout().getRoomByName("Vault Chamber Entrance");
 
-        assertEquals("From here you can go: South", harryVault.printAllDirections());
+        assertEquals("From here you can go: North, East, Down, or West", vaultEntrance.printAllDirections());
 
     }
 
