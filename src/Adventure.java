@@ -42,21 +42,21 @@ public class Adventure {
                 adventure = new Adventure(
                         new JsonParser().parse(Data.getFileContentsAsString("Gringotts")).getAsJsonObject());
                 break;
-            /*case "URL":
+            case "URL":
                 System.out.println("Enter the URL you want to create a JSON for");
-                String url = scanner.nextLine();
                 while (adventure == null) {
+                    String url = scanner.nextLine();
                     adventure = initializeURL(url);
                 }
                 break;
             default:
                 System.out.println("Sorry, you must enter 'URL' or 'File'");
-                break;*/
+                main(null);
+                return;
         }
 
         adventure.playGame();
 
-        int i = 0;
     }
 
     /**
@@ -80,16 +80,15 @@ public class Adventure {
                     .getAsJsonObject();
 
             Adventure adventure = new Adventure(jsonData);
-
-            System.out.println("Press enter to start game");
+            System.out.println("\n---------------------------------\n");
             return adventure;
         } catch (IOException e) {
             System.out.println("This is not a JSON URL, try again");
+            return null;
         } catch (Exception e) {
             System.out.println("This URL is not an Adventure game, try again");
+            return null;
         }
-
-        return null;
 
     }
 
