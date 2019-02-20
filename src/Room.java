@@ -183,6 +183,32 @@ public class Room {
 
     }
 
+    public String printAllItems() {
+
+        StringBuilder itemList = new StringBuilder();
+        itemList.append("From here you can pickup: ");
+
+        for (int i = 0; i < items.length; i++) {
+
+            if (i == 0) {
+                itemList.append(items[0].getName());
+                if (items.length > 1) {
+                    itemList.append(", ");
+                }
+            } else if (i != items.length - 1) {
+                itemList.append(items[i].getName());
+                itemList.append(", ");
+            } else {
+                itemList.append("or ");
+                itemList.append(items[i].getName());
+            }
+
+        }
+
+        return itemList.toString();
+
+    }
+
     /**
      * Creates a new direction of this instance of room.
      * Note: This does not add to the Direction array.

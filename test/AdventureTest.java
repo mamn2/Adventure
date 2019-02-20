@@ -56,8 +56,8 @@ public class AdventureTest {
     @Test
     public void testInvalidDirectionInput() throws AssertionError {
 
-        //userInputResponse should return null if the input is not readable
-        assertNull(siebelAdventureGame.userInputResponse("gophers",
+        //goDirectionResponse should return null if the input is not readable
+        assertNull(siebelAdventureGame.goDirectionResponse("gophers",
                 siebelAdventureGame.getGameLayout().getStartingRoom()));
 
     }
@@ -65,7 +65,7 @@ public class AdventureTest {
     @Test
     public void testGoInvalidDirectionInput() throws AssertionError {
 
-        assertNull(siebelAdventureGame.userInputResponse("go eas",
+        assertNull(siebelAdventureGame.goDirectionResponse("go eas",
                 siebelAdventureGame.getGameLayout().getStartingRoom()));
 
     }
@@ -76,7 +76,7 @@ public class AdventureTest {
         Room siebelEntry = siebelAdventureGame.getGameLayout().getRoomByName("SiebelEntry");
         Room matthewsStreet = siebelAdventureGame.getGameLayout().getStartingRoom();
 
-        assertEquals(siebelEntry, siebelAdventureGame.userInputResponse("GO east", matthewsStreet));
+        assertEquals(siebelEntry, siebelAdventureGame.goDirectionResponse("GO east", matthewsStreet));
 
     }
 
@@ -84,7 +84,7 @@ public class AdventureTest {
     public void testExitInput() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.userInputResponse("exit", siebelAdventureGame.getGameLayout().getStartingRoom());
+        siebelAdventureGame.goDirectionResponse("exit", siebelAdventureGame.getGameLayout().getStartingRoom());
 
     }
 
@@ -92,7 +92,7 @@ public class AdventureTest {
     public void testQuitInput() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.userInputResponse("quit", siebelAdventureGame.getGameLayout().getAllRooms()[3]);
+        siebelAdventureGame.goDirectionResponse("quit", siebelAdventureGame.getGameLayout().getAllRooms()[3]);
 
     }
 
@@ -100,7 +100,7 @@ public class AdventureTest {
     public void testGameOver() throws AssertionError {
 
         exit.expectSystemExitWithStatus(1);
-        siebelAdventureGame.userInputResponse("go soUth",
+        siebelAdventureGame.goDirectionResponse("go soUth",
                 siebelAdventureGame.getGameLayout().getRoomByName("SiebelEastHallway"));
 
     }

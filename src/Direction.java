@@ -75,6 +75,8 @@ public class Direction {
             unlocked = true;
             return true;
         } else {
+            System.out.println("Sorry you don't have the necessary keys to go to " + roomAheadName);
+            System.out.println("You need: " + necessaryKeys[0].getName());
             return false;
         }
 

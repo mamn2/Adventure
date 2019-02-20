@@ -21,9 +21,10 @@ public class Player {
     public void addToItems(Item newItem) {
 
         if (items.size() < 3) {
+            System.out.println("You have picked up " + newItem.getName());
             items.add(newItem);
         } else {
-            System.out.println("You can only have 3 items in this list, please remove a different item");
+            System.out.println("You can only have 3 items in this list, please remove an item to make way");
         }
 
     }
@@ -36,11 +37,22 @@ public class Player {
     public void removeFromItems(Item oldItem) {
 
         if (items.contains(oldItem)) {
+            System.out.println("You have removed " + oldItem.getName());
             items.remove(oldItem);
         } else {
             System.out.println("The player does not have the item you want to remove");
         }
 
+    }
+
+    public boolean checkPlayerHasMonsterRepellent(Monster monster) {
+        boolean playerHasMonsterRepellent = false;
+        for (Item item : items) {
+            if (item.equals(monster.repellent)) {
+                playerHasMonsterRepellent = true;
+            }
+        }
+        return playerHasMonsterRepellent;
     }
 
 }

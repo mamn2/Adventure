@@ -87,7 +87,7 @@
         },
         {
           "directionName" : "West",
-          "room" : "Gringott's Bank Lobby",
+          "room" : "Gringotts Bank Lobby",
           "enabled" : true,
           "validKeyNames" : [
           ]
@@ -105,7 +105,7 @@
       "directions" : [
         {
           "directionName" : "South",
-          "room" : "Gringott's Bank Lobby",
+          "room" : "Vault Chamber Entrance",
           "enabled" : false,
           "validKeyNames" : [
             "Griphook"

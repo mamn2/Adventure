@@ -190,17 +190,93 @@ public class Adventure {
 
             //Lists the directions a user can travel
             System.out.println(currentRoom.printAllDirections());
+            System.out.println(currentRoom.printAllItems());
 
-            Room tempCurrentRoom = null;
-            while (tempCurrentRoom == null) {
-                tempCurrentRoom = userInputResponse(scanner.nextLine(), currentRoom);
+            boolean newLocation = false;
+            while (!newLocation && !player.getItems().contains(gameLayout.getItemObjective())) {
+                String userInput = scanner.nextLine();
+
+                if (userInput.length() <= 3) {
+                    continue;
+                } else if (userInput.substring(0, 3).toUpperCase().equals("GO ")) {
+                    Room tempCurrentRoom = goDirectionResponse(userInput, currentRoom);
+                    if (tempCurrentRoom != null) {
+                        currentRoom = tempCurrentRoom;
+                        System.out.println(currentRoom.getDescription());
+                        break;
+                    }
+                } else if (userInput.substring(0, 7).toUpperCase().equals("REMOVE ")) {
+                    removeItemResponse(userInput);
+                } else {
+                    pickupItemResponse(userInput, currentRoom);
+                    if (player.getItems().contains(gameLayout.getItemObjective())) {
+                        System.out.println("Congratulations, you found " + gameLayout.getItemObjective().getName()
+                                + " and won the game!");
+                        break;
+                    }
+                }
             }
 
-            //Since the travel direction is possible, we move the user to a new room
-            currentRoom = tempCurrentRoom;
-            System.out.println(currentRoom.getDescription());
+            if (currentRoom.getMonster() != null) {
+                if (!player.checkPlayerHasMonsterRepellent(currentRoom.getMonster())) {
+                    System.out.println("You encountered a " + currentRoom.getMonster().name + " and died");
+                    System.exit(1);
+                } else {
+                    System.out.println("You encountered a monster, but defeated it");
+                }
+            }
 
         }
+
+    }
+
+    public Item pickupItemResponse(String input, Room currentRoom) {
+
+        if (input == null || input.length() < 8) {
+            return null;
+        }
+
+        //Tests for base case exit or quit, case insensitive
+        if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
+
+            System.exit(1);
+            //Never executed, but needed by compiler
+            return null;
+
+        } else if (input.substring(0, 7).toUpperCase().equals("PICKUP ")) {
+
+            for (Item item : currentRoom.getItems()) {
+                if (item.getName().toUpperCase().equals(input.substring(7).toUpperCase())) {
+                    player.addToItems(item);
+                    return item;
+                }
+            }
+
+            System.out.println("I can't " + input);
+
+        } else {
+            System.out.println("I don't understand " + "'" + input + "'");
+            return null;
+        }
+
+        return null;
+
+    }
+
+    public Item removeItemResponse(String input) {
+
+        if (input == null) {
+            return null;
+        }
+
+        for (Item item : player.getItems()) {
+            if (item.getName().equalsIgnoreCase(input.substring(7))) {
+                player.removeFromItems(item);
+                return item;
+            }
+        }
+
+        return null;
 
     }
 
@@ -211,18 +287,14 @@ public class Adventure {
      * @return a room if there is one, null if the user entered the wrong input.
      *         System exits if the user prompts it to exit.
      */
-    public Room userInputResponse(String input, Room currentRoom) {
+    public Room goDirectionResponse(String input, Room currentRoom) {
 
         if (input == null || input.length() < 3) {
             return null;
         }
 
-        //Tests for base case exit or quit, case insensitive
-        if (input.toUpperCase().equals("EXIT") || input.toUpperCase().equals("QUIT")) {
-            System.exit(1);
-            //Never executed, but needed by compiler
-            return null;
-        } else if (input.substring(0, 3).toUpperCase().equals("GO ")) {
+        if (input.substring(0, 3).toUpperCase().equals("GO ")) {
+
             //looks for rooms in direction specified by user
             //if there is no room in said direction, return null
             Room tempCurrentRoom = currentRoom.findRoomsInDirection(input.substring(3));
@@ -237,6 +309,7 @@ public class Adventure {
             } else {
                 return null;
             }
+
         } else {
             System.out.println("I don't understand " + "'" + input + "'");
             return null;
